@@ -16,7 +16,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: ricardosr96/obligatorio-isc:payment
+#        image: ricardosr96/obligatorio-isc:payment
+        image: 563973949950.dkr.ecr.us-east-1.amazonaws.com/obligatorio-isc:paymentservice
         ports:
         - containerPort: 50051
         env:

@@ -36,7 +36,8 @@ spec:
           value: "frontend:80"
       containers:
       - name: main
-        image: ricardosr96/obligatorio-isc:loadgenerator
+#        image: ricardosr96/obligatorio-isc:loadgenerator
+        image: 563973949950.dkr.ecr.us-east-1.amazonaws.com/obligatorio-isc:loadgenerator
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"

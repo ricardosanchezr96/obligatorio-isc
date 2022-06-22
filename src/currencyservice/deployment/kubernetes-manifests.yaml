@@ -16,7 +16,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: ricardosr96/obligatorio-isc:currency
+#        image: ricardosr96/obligatorio-isc:currency
+        image: 563973949950.dkr.ecr.us-east-1.amazonaws.com/obligatorio-isc:currencyservice
         ports:
         - name: grpc
           containerPort: 7000
