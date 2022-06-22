@@ -8,6 +8,6 @@ resource "aws_eks_cluster" "obligatorio-eks" {
 
 }
 
-output "endpoint" {
-  value = aws_eks_cluster.obligatorio-eks.endpoint
-}
+# output "endpoint" {
+#   value = aws_eks_cluster.obligatorio-eks.endpoint
+# }
