@@ -115,8 +115,7 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 >> * Instancia Bastión: 2 minutos
 Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la infraestructura manualmente para poder continuar con el despliegue.
 >7. Una vez finalizado el despliegue de infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
->
->![Bastión Listo](./docs/img/bastion-ready.png)
+>![Bastión Listo](./docs/img/bastion-ready.png)  
 >8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
 >9. Una vez conectado al Bastión, se deberá introducir el comando `kubectl get -o json svc frontend-external | grep hostname` para obtener el endpoint y poder acceder a Online Boutique
