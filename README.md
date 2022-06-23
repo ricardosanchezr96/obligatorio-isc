@@ -41,6 +41,42 @@ Para lograr el despliegue de la infraestructura donde se alojará Online Boutiqu
 
 
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB** 
+> Con el fin de utilizar la mayor cantidad de recursos de AWS posibles, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
+Sin embargo, las cuentas AWS Academy permiten crear únicamente repositorios privados, por lo que ningún usuario diferente del dueño del repositorio podrá acceder al mismo, salvo que se le otorguen permisos para hacer un pull de las imágenes.
+A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura para todos los integrantes del equipo por medio de la siguiente Policy de acceso:
+`{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "id-account-access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::004445954003:root"
+      },
+      "Action": [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:ListImages"
+      ]
+    }
+  ]
+}`
+>En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
+Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:
+>| Archivo a modificar | Linea a comentar | **Linea a descomentar** |
+|:---:|:---:|:---:|
+| /src/adservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/cartservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/checkoutservice/deployment/kubernetes-manifest.yaml | 19 | 18 |
+| /src/currencyservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/emailservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/frontend/deployment/kubernetes-manifest.yaml | 21 | 20 |
+| /src/loadgenerator/deployment/kubernetes-manifest.yaml | 40 | 39 |
+| /src/paymentservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/productcatalogservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/recommendationservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
+| /src/shippingservice/deployment/kubernetes-manifest.yaml | 19 | 18 |
+
 
 ## Screenshots
 
@@ -61,7 +97,7 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 1. Clonar el repositorio (git clone https://github.com/ricardosanchezr96/obligatorio-isc.git)
 2. Editar los archivos mencionados en el bloque anterior, para que no exista conflicto alguno al momento de realizar la ejecución
 3. Posicionarse sobre el directorio *iac* del repositorio clonado
-4. Ejecutar el comando *terraform init* para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS)
+4. Ejecutar el comando `terraform init` para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS)
 5. Ejecutar `terraform plan` y verificar que la salida del comando indique que se crearán 9 recursos de infraestructura en AWS.
 6. Ejecutar `terraform apply` para que se cree la infraestructura
 > Nota: Al ejecutar el apply de Terraform, se debe tomar en consideración los tiempos aproximados que tarda en crear algunos recursos:
@@ -73,6 +109,7 @@ Se debe tener en consideración que una interrupción forzada en la ejecución d
 8. Conectarse vía SSH al bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
 9. Una vez conectado al Bastión, se deberá introducir el comando `kubectl get -o json svc frontend-external | grep hostname` para obtener el endpoint y poder acceder a Online Boutique
+
 ## Pruebas de funcionamiento
 
 gif con tf apply
@@ -98,3 +135,5 @@ Lo que no pudimos solucionar y por que
 #### Referencias bibliográficas
 
 #### Declaración de autoría
+
+Por la siguiente, Martín Pacheco y Ricardo Sánchez, con números de estudiante 263651 y 255864 respectivamente, estudiantes de la carrera Analista en Infraestructura Informática en relación con el trabajo obligatorio de fin de semestre presentado para su evaluación y defensa, declaramos que asumimos la autoría de dicho documento entendida en el sentido de que no se han utilizado fuentes sin citarlas debidamente.
