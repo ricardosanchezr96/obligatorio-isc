@@ -10,6 +10,29 @@ Con la información contenida en el repositorio, el usuario estará en capacidad
 
 ## Dinámica de trabajo
 
+En primer lugar, se generó un repositorio público basado en el [contenido](https://github.com/ISC-ORT-FI/online-boutique) brindado por los docentes. 
+
+Luego de esto, se asignaron permisos de edición a todos los integrantes del grupo, para poder trabajar de manera colaborativa.
+
+Se personalizó el archivo .gitignore para que todos los archivos referentes a cada workspace de Terraform no sean incluidos en cada uno de los commits realizados.
+Una vez que cada integrante logró clonar el repositorio de manera local en su PC, se procedió a desarrollar los componentes de la infraestructura a desplegar, tratando de adoptar el siguiente orden:
+1. Componentes de networking, desde lo más grande hasta lo más específico
+1.1 VPC
+1.2 Internet Gateway
+1.3 Subnets
+1.4 Security Group
+2. Componentes de Kubernetes (EKS)
+2.1 EKS Cluster
+2.2 EKS Node Group
+3. Instancia Bastión 
+
+Al lograr un despliegue exitoso de toda la infraestructura, se procedió a crear un Script para aprovisionar el Bastión. En esta etapa se describieron las acciones que se necesitaba realizar para lograr que la instancia esté en capacidad de desplegar automáticamente la web Online Boutique:
+* Actualizar todos los paquetes del sistema a su versión más reciente
+* Instalación de dependencias necesarias para una correcta interacción con todos los servicios que se requieren para hacer el despliegue (Git, Docker, Kubernetes v1.21.1)
+* Clonado del repositorio para tener los archivos necesarios para realizar el despliegue de los microservicios
+* Carga de credenciales de AWS en los archivos *config* y *credentials*, para una correcta interacción con los servicios de Amazon
+* Conexión al contexto del Cluster de EKS creado previamente
+* Ejecución de comandos que permiten el despliegue de los microservicios
 
 
 ## Componentes de infraestructura
@@ -22,9 +45,6 @@ Para lograr el despliegue de la infraestructura donde se alojará Online Boutiqu
 * Elastic Kubernetes Service Node Group
 * Instancia EC2, la cual cumplirá la función de Bastión para el deploy de los microservicios
 * Security Group para acceso vía SSH al Bastión
-
-
-
 
 
 ## Diagrama de Arquitectura
@@ -43,15 +63,16 @@ Para lograr el despliegue de la infraestructura donde se alojará Online Boutiqu
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB** 
 > Con el fin de utilizar la mayor cantidad de recursos de AWS posibles, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
 Sin embargo, las cuentas AWS Academy permiten crear únicamente repositorios privados, por lo que ningún usuario diferente del dueño del repositorio podrá acceder al mismo, salvo que se le otorguen permisos para hacer un pull de las imágenes.
-A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura para todos los integrantes del equipo por medio de la siguiente Policy de acceso:
-`{
+A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura para todos los integrantes del equipo por medio de la siguiente Policy de acceso: 
+```json
+{
   "Version": "2008-10-17",
   "Statement": [
     {
       "Sid": "id-account-access",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::004445954003:root"
+        "AWS": "arn:aws:iam::ACCOUNT-UNIQUE-ID:root"
       },
       "Action": [
         "ecr:BatchGetImage",
@@ -60,12 +81,14 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
       ]
     }
   ]
-}`
+}
+```
+
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:
 >![Screenshot de tabla de cambios](./docs/img/tabla-ecr-dockerhub.png)
 Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.
-**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*
+>**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*
 
 
 ## Screenshots
