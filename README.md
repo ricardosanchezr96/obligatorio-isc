@@ -16,14 +16,14 @@ Luego de esto, se asignaron permisos de edición a todos los integrantes del gru
 
 Se personalizó el archivo .gitignore para que todos los archivos referentes a cada workspace de Terraform no sean incluidos en cada uno de los commits realizados.
 Una vez que cada integrante logró clonar el repositorio de manera local en su PC, se procedió a desarrollar los componentes de la infraestructura a desplegar, tratando de adoptar el siguiente orden:
->1. Componentes de networking, desde lo más grande hasta lo más específico
-    *  VPC
-    * Internet Gateway
-    * Subnets
-    * Security Group
->2. Componentes de Kubernetes (EKS)
-    * EKS Cluster
-    * EKS Node Group
+>1. Componentes de networking, desde lo más grande hasta lo más específico  
+    *  VPC  
+    * Internet Gateway  
+    * Subnets  
+    * Security Group  
+>2. Componentes de Kubernetes (EKS)  
+    * EKS Cluster  
+    * EKS Node Group  
 >3. Instancia Bastión 
 
 Al lograr un despliegue exitoso de toda la infraestructura, se procedió a crear un Script para aprovisionar el Bastión. En esta etapa se describieron las acciones que se necesitaba realizar para lograr que la instancia esté en capacidad de desplegar automáticamente la web Online Boutique:
@@ -86,7 +86,7 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
 
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:  
->![Tabla de cambios](./docs/img/tabla-ecr-dockerhub.png)
+>![Tabla de cambios](./docs/img/tabla-ecr-dockerhub.png)  
 Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.
 >>**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*  
 
