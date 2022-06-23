@@ -1,4 +1,6 @@
-# Creación de subnet
+# Creacion de subnets en diferentes AZ, para tener redundancia en los servicios
+# Se le indica el VPC, las redes que manejaran y se habilita la creacion automatica 
+# de una IP publica para los recursos que se conecten a ellas
 
 resource "aws_subnet" "obligatorio-subnet-a" {
   vpc_id      = aws_vpc.obligatorio-vpc.id

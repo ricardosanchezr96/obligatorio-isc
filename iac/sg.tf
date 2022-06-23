@@ -1,4 +1,5 @@
-# Se crea Security Group, el cual será asociado a la instancia
+# Se crea Security Group, el cual será asociado al bastion
+# para poder acceder via ssh
 
 resource "aws_security_group" "obligatorio-sg" {
   name        = "obligatorio-sg"
