@@ -51,7 +51,7 @@ Para lograr el despliegue de la infraestructura donde se alojará Online Boutiqu
 
 **Online Boutique** es una implementación cloud de microservicios que se encarga de generar una página web de compras online, integrando diversos servicios escalables e independientes que permiten al usuario simular una experiencia real de compra digital, con la posibilidad de buscar artículos, añadirlos a su carrito y realizar la compra de los mismos. Soporta el uso de varios tipos de divisa, carga de datos de tarjetas de crédito, etc.
 
-[![Arquitectura de la solución](./docs/img/architecture-diagram.png)](./docs/img/architecture-diagram.png)
+![Arquitectura de la solución](./docs/img/arquitectura.png)
 
 
 > **⚠ ATENCION: CAMBIOS A REALIZAR PARA IMPLEMENTAR DESDE DIFERENTES HOSTS⚠**  
@@ -118,7 +118,10 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 > * EKS Node Group: 3 minutos
 > * Instancia Bastión: 2 minutos
 Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la infraestructura manualmente para poder continuar con el despliegue.
-7. Una vez finalizado el despliegue de infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos.
+7. Una vez finalizado el despliegue de infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
+
+![Bastión Listo](./docs/img/bastion-ready.png)
+
 8. Conectarse vía SSH al bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
 9. Una vez conectado al Bastión, se deberá introducir el comando `kubectl get -o json svc frontend-external | grep hostname` para obtener el endpoint y poder acceder a Online Boutique
@@ -130,12 +133,12 @@ Se debe tener en consideración que una interrupción forzada en la ejecución d
 
 ### Obtención de DNS Endpoint de Online Boutique
 
-![Terraform Apply](./docs/gif/elb-endpoint.gif)
+![Online Boutique Endpoint](./docs/gif/elb-endpoint.gif)
 
 
 ### Compra de artículos en Online Boutique
 
-![Terraform Apply](./docs/gif/oden-compra.gif)
+![Proceso compra](./docs/gif/oden-compra.gif)
 
 ## Dificultades
 explicar problemas y soluciones
