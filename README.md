@@ -124,11 +124,18 @@ Se debe tener en consideración que una interrupción forzada en la ejecución d
 9. Una vez conectado al Bastión, se deberá introducir el comando `kubectl get -o json svc frontend-external | grep hostname` para obtener el endpoint y poder acceder a Online Boutique
 
 ## Pruebas de funcionamiento
+### Ejecución de Terraform Apply
 
-gif con tf apply
-gif obteniendo url de la web
-gif haciendo compra
+![Terraform Apply](./docs/gif/terraform-apply.gif)
 
+### Obtención de DNS Endpoint de Online Boutique
+
+![Terraform Apply](./docs/gif/elb-endpoint.gif)
+
+
+### Compra de artículos en Online Boutique
+
+![Terraform Apply](./docs/gif/oden-compra.gif)
 
 ## Dificultades
 explicar problemas y soluciones
