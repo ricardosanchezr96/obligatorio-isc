@@ -34,7 +34,7 @@ Para lograr el despliegue de la infraestructura donde se alojará Online Boutiqu
 [![Arquitectura de la solución](./docs/img/architecture-diagram.png)](./docs/img/architecture-diagram.png)
 
 
-> **⚠ ATENCION: CAMBIOS A REALIZAR PARA IMPLEMENTAR DESDE DIFERENTES HOSTS.⚠**  
+> **⚠ ATENCION: CAMBIOS A REALIZAR PARA IMPLEMENTAR DESDE DIFERENTES HOSTS⚠**  
 > En vista de las limitaciones que conlleva trabajar con AWS Academy, cada uno de los integrantes deberá realizar ciertas modificaciones para poder hacer el deploy automatizado de la infraestructura, las cuales se detallan a continuación:
 > * Ingresar las credenciales de AWS en el archivo iac/provision.sh para que el equipo Bastión pueda conectarse correctamente a la cuenta que se requiera utilizar
 > * Modificar el Role ARN en los archivos iac/eks-cluster.tf e iac/eks-ng.tf. Esto se debe a que las cuentas Academy de AWS no permiten gestionar permisos para usuarios y roles, por lo que deberán ingresar de forma manual en cada cuenta.
@@ -63,19 +63,9 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
 }`
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:
->| Archivo a modificar | Linea a comentar | **Linea a descomentar** |
-|:---:|:---:|:---:|
-| /src/adservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/cartservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/checkoutservice/deployment/kubernetes-manifest.yaml | 19 | 18 |
-| /src/currencyservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/emailservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/frontend/deployment/kubernetes-manifest.yaml | 21 | 20 |
-| /src/loadgenerator/deployment/kubernetes-manifest.yaml | 40 | 39 |
-| /src/paymentservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/productcatalogservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/recommendationservice/deployment/kubernetes-manifest.yaml | 20 | 19 |
-| /src/shippingservice/deployment/kubernetes-manifest.yaml | 19 | 18 |
+>![Screenshot de tabla de cambios](./docs/img/tabla-ecr-dockerhub.png)
+Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.
+**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*
 
 
 ## Screenshots
