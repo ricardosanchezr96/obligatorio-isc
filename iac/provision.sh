@@ -9,7 +9,6 @@ amazon-linux-extras install docker # Install the most recent Docker Engine packa
 systemctl enable docker # Ensure that the Docker daemon starts after each system reboot
 service docker start # Start docker service
 usermod -a -G docker ec2-user # Add the ec2-user to the docker group so you can execute Docker commands without using sudo
-yum install jq -y
 
 curl -LO https://dl.k8s.io/release/v1.22.1/bin/linux/amd64/kubectl # Download K8s installer
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl # Install kubectl
@@ -23,9 +22,9 @@ chown ec2-user:ec2-user $AWS_CREDENTIALS_FILE
 chmod 600 $AWS_CREDENTIALS_FILE
 
 echo "[default]"                              > $AWS_CREDENTIALS_FILE
-echo "aws_access_key_id= "        >> $AWS_CREDENTIALS_FILE
-echo "aws_secret_access_key= " >> $AWS_CREDENTIALS_FILE
-echo "aws_session_token= " >> $AWS_CREDENTIALS_FILE
+echo "aws_access_key_id= ASIAYGT3XRH7OHR35RWS"        >> $AWS_CREDENTIALS_FILE
+echo "aws_secret_access_key= IZBF0j+XqqITqVV2Axbmm8bJDowT6GfXEFu+Cjbp" >> $AWS_CREDENTIALS_FILE
+echo "aws_session_token= FwoGZXIvYXdzEGIaDGwrWceoG1BtctVYAyK4AS8l0lpScaaJ8omT7NKvr/YWTD3ISLxwU0cUPefMxA/VjEsQIHVkRl84rgaSK6FT5mZwKXezCIRUjytq1Me5n2crXJQAb8YSIy+0hepR4z72lbs2CZMKUOjOgTBVu1b+1nfaR3mZKPreiw7IlDtRk5bh6xK2cPxPUiRBkmrkrIsfLBRrwEw/oAnZejkZRMMQmtyW2i6T9iYAZoO0OLF7uoz36Kjdm0Xm9P7z1xJ4IoT8RU21F947HOEopd/OlQYyLdV+/SjmetHQVMuwBWCsy9guLn2I/kvKVLzRRgRyUgOcSTYFrlc1oxXjHbbPMQ==" >> $AWS_CREDENTIALS_FILE
 
 
 touch $AWS_CONFIG_FILE
@@ -41,16 +40,16 @@ su - ec2-user -c "aws eks update-kubeconfig --region us-east-1 --name obligatori
 
 cd obligatorio-isc/src/
 
-kubectl create -f adservice/deployment/kubernetes-manifests.yaml
-kubectl create -f cartservice/deployment/kubernetes-manifests.yaml
-kubectl create -f checkoutservice/deployment/kubernetes-manifests.yaml
-kubectl create -f currencyservice/deployment/kubernetes-manifests.yaml
-kubectl create -f frontend/deployment/kubernetes-manifests.yaml
-kubectl create -f paymentservice/deployment/kubernetes-manifests.yaml
-kubectl create -f productcatalogservice/deployment/kubernetes-manifests.yaml
-kubectl create -f recommendationservice/deployment/kubernetes-manifests.yaml
-kubectl create -f redis/deployment/kubernetes-manifests.yaml
-kubectl create -f shippingservice/deployment/kubernetes-manifests.yaml
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/adservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/cartservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/checkoutservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/currencyservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/frontend/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/paymentservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/productcatalogservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/recommendationservice/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/redis/deployment/kubernetes-manifests.yaml"
+su - ec2-user -c "kubectl create -f /home/ec2-user/obligatorio-isc/src/shippingservice/deployment/kubernetes-manifests.yaml"
 
 
 #Comando para obtener endpoint del ELB dedse bastion
