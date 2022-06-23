@@ -1,5 +1,5 @@
-# Creacion de VPC, desde donde se contronlara el resto de la infraestructura
-# Se indica un nombre y la red que manejara
+# Creacion de VPC, desde donde se controlara el resto de la infraestructura.
+# Se indica un nombre y la red que manejara.
 
 resource "aws_vpc" "obligatorio-vpc" {
   cidr_block       = var.vpc_cidr

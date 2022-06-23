@@ -1,5 +1,5 @@
-# Archivo de variables para simplificar la portabilidad de la infraestructura
-# que a su vez permite que realizar modificaciones en la misma sea mucho mas directo
+# Archivo de variables para simplificar la portabilidad de la infraestructura,
+# que a su vez permite que realizar modificaciones en la misma sea mucho mas directo.
 
 # Perfil de conexion contra AWS
 variable "perfil" {
@@ -9,11 +9,11 @@ variable "perfil" {
 variable "region" {
   default = "us-east-1"
 }
-# Tipo de instancia a utilizar para el bastion
+# Tipo de instancia a utilizar para el Bastion
 variable "inst-type" {
   default = "t2.micro"
 }
-# ID de la AMI que se utilizara para aprovisionar el bastion
+# ID de la AMI que se utilizara para aprovisionar el Bastion
 variable "ami-id" {
   default = "ami-03ededff12e34e59e"
 }
@@ -29,7 +29,7 @@ variable "subnet-a" {
 variable "subnet-b" {
   default = "172.16.2.0/24"
 }
-# Zonas de disponibilidad a utilizar
+# Zonas de Disponibilidad a utilizar
 variable "vpc_aws_az-a" {
   default = "us-east-1a"
 }
@@ -37,8 +37,8 @@ variable "vpc_aws_az-a" {
 variable "vpc_aws_az-b" {
   default = "us-east-1b"
 }
-# IP publica del bastin a modo de variable output, para facilitar 
-# la conexion via ssh al mismo
+# IP publica del Bastion a modo de variable output, para facilitar 
+# la conexion via SSH al mismo
 output "bastion-public-ip" {
   value = aws_instance.bastion.public_ip
 }
