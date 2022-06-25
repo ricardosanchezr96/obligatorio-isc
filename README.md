@@ -97,7 +97,7 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:  
 ><p align="center">
-><img src="./docs/img/tabla-ecr-dockerhub.png" width="700" alt="Online Boutique" />
+><img src="./docs/img/tabla-ecr-dockerhub.png" width="450" alt="Online Boutique" />
 </p>
 
 >Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.  
