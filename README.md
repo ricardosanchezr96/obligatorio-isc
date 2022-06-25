@@ -4,9 +4,11 @@
 
 # Descripción de la solución
 
-Este repositorio, y la documentación contenida en él, representan la entrega final del trabajo práctico correspondiente a la asignatura *Implementación de Soluciones cloud*, dentro del marco del quinto semestre de la carrera *Analista en Infraestructura Informática*, en la *Universidad ORT Uruguay*.
+Este repositorio, y la documentación contenida en él, representan la entrega final del trabajo práctico correspondiente a la asignatura *Implementación de Soluciones Cloud*, dentro del marco del quinto semestre de la carrera *Analista en Infraestructura Informática*, en la *Universidad ORT Uruguay*.
 
 Con la información contenida en el repositorio, el usuario estará en capacidad de hacer un deploy automatizado de la web Online Boutique, haciendo uso únicamente del comando `terraform apply`
+
+[Enlace al repositorio](https://github.com/ricardosanchezr96/obligatorio-isc) 
 
 # Dinámica de trabajo
 
@@ -116,14 +118,14 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 >2. Editar, según la necesidad, los archivos mencionados en el bloque anterior, para que no exista conflicto alguno al momento de realizar la ejecución.
 >3. Posicionarse sobre el directorio *iac* del repositorio clonado.
 >4. Ejecutar el comando `terraform init` para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS).
->5. Ejecutar `terraform plan` y verificar que la salida del comando indique que se crearán 9 recursos de Infraestructura en AWS.
->6. Ejecutar `terraform apply` para que se cree la Infraestructura
+>5. Ejecutar el comando `terraform plan` y verificar que la salida del comando indique que se crearán 9 recursos de Infraestructura en AWS.
+>6. Ejecutar el comando `terraform apply` para que se cree la Infraestructura
 >> **Nota:** Al ejecutar el apply de Terraform, se debe tomar en consideración los tiempos aproximados que tarda en crear algunos recursos:
 >> * **EKS Cluster:** 10 minutos
 >> * **EKS Node Group:** 3 minutos
->> * **Instancia Bastión:** 2 minutos  
-**Nota:** Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
->7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
+>> * **Instancia Bastión:** 2 minutos <br>   
+>Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
+>7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los Pods de Kubernetes están operativos:
 >![Bastión Listo](./docs/img/bastion-ready.png)  
 >8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web:   
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
@@ -146,9 +148,9 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 
 ![Proceso compra](./docs/gif/oden-compra.gif)
 
-# Dificultades
+# Dificultades superadas
 
-Para la realización del siguiente trabajo práctico nos encontramos y superamos las siguientes dificultades:
+Para la realización del siguiente trabajo práctico nos encontramos las siguientes dificultades:
 
 * Toda ejecución realizada desde el Script de aprovisionamiento para el Bastión se realizaba como Root, por lo que no teníamos disponibles los recursos al iniciar sesión como *ec2-user*. Esto se solucionó ingresando todos los comandos específicos de *kubectl* siguiendo el siguiente formato:<br>
 `su - ec2-user -c "comando"`  
@@ -161,10 +163,10 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
 * La falta de experiencia en el uso de estas herramientas y modalidades de trabajo exigieron pasar por una etapa de aprendizaje que nos impidió realizar ciertas mejoras al trabajo práctico
     * Auto escalado a demanda
     * Carga automática de credenciales de AWS en el Bastión
-* El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltan:
+* El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltamos:
     * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.  
     * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitoso, primero se deberá eliminar de forma manual el ELB.  
-    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
+    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la Infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
 
 # Futuras mejoras
@@ -188,6 +190,7 @@ En una primera instancia, detectamos los siguientes puntos de mejora para así o
 * [Documentación oficial de Kubernetes](https://kubernetes.io/es/docs/home/)
 * [Documentación oficial de AWS](https://docs.aws.amazon.com/)
 * [Documentación oficial de Docker](https://docs.docker.com/)
+
 
 
 # Declaración de autoría
