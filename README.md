@@ -46,7 +46,9 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 >* Elastic Kubernetes Service Node Group
 >* Instancia EC2, la cual cumplirá la función de Bastión para el deploy de los microservicios (AMI *Amazon Linux*, *instancia tipo t2.micro*)
 >* Security Group para acceso vía SSH al Bastión
-
+><p align="center">
+><img src="./docs/img/archivos-tf.png" width="450" alt="Archivos Terraform" />
+</p>
 
 # Diagrama de Arquitectura
 
@@ -63,7 +65,7 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 ><p align="center">
 >  <img width="200" src="./docs/img/lineas-provision.png" alt="Tabla de cambios"> <br>
 >  <img width="200" src="./docs/img/linea-eks-cluster.png" alt="Tabla de cambios"><br>
->  <img width="200" src="./docs/img/linea-eks-cluster.png" alt="Tabla de cambios">
+>  <img width="200" src="./docs/img/linea-eks-ng.png" alt="Tabla de cambios">
 </p>  
 
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB**  
@@ -123,10 +125,12 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 **Nota:** Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
 >7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
 >![Bastión Listo](./docs/img/bastion-ready.png)  
->8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web: <br>  
+>8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web:   
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
->9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:<br>  
+>
+>9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:  
 `kubectl get -o json svc frontend-external | grep hostname`  
+
 
 # Pruebas de funcionamiento
 ## Ejecución de Terraform Apply
@@ -146,7 +150,8 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 
 Para la realización del siguiente trabajo práctico nos encontramos y superamos las siguientes dificultades:
 
-* Toda ejecución realizada desde el Script de aprovisionamiento para el Bastión se realizaba como Root, por lo que no teníamos disponibles los recursos al iniciar sesión como *ec2-user*.
+* Toda ejecución realizada desde el Script de aprovisionamiento para el Bastión se realizaba como Root, por lo que no teníamos disponibles los recursos al iniciar sesión como *ec2-user*. Esto se solucionó ingresando todos los comandos específicos de *kubectl* siguiendo el siguiente formato:<br>
+`su - ec2-user -c "comando"`  
 * Inicialmente trabajamos con un fork del repositorio original brindado por los profesores, el cual no podía ser configurado como de acceso público. Para solucionar esto, tuvimos que crear un nuevo repositorio, el cual fue configurado como público, lo que permite compartir el proyecto con cualquier persona externa que quiera hacer uso del mismo.
 * El hecho de no poder crear un repositorio público en ECR generó la necesidad, en una primera instancia, de crear un repositorio público en DockerHub, modificar el tag de las imágenes y hacer un push de las mismas para poder llamar a las imágenes al momento de hacer el despliegue.
 
