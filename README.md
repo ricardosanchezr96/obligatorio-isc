@@ -23,7 +23,7 @@ Una vez que cada integrante logró clonar el repositorio de manera local en su P
     * Security Group para acceder por SSH al equipo Bastión (puerto 22)  
 >2. Componentes de Kubernetes (EKS)  
     * EKS Cluster  
-    * EKS Node Group, compuesto por dos Worker Nodes   
+    * EKS Node Group, compuesto por dos Worker Nodes. Cada uno de los Workers estará ubicado en diferente Zona de Disponibilidad para brindar redundancia en el servicio.  
 >3. Instancia Bastión  
 
 Al lograr un despliegue exitoso de toda la Infraestructura, se procedió a crear un Script para aprovisionar el Bastión. En esta etapa se describieron las acciones que se necesitaba realizar para lograr que la instancia esté en capacidad de desplegar automáticamente la web Online Boutique:
@@ -32,7 +32,7 @@ Al lograr un despliegue exitoso de toda la Infraestructura, se procedió a crear
 >* Clonado del repositorio para tener los archivos necesarios para realizar el despliegue de los microservicios  
 >* Carga de credenciales de AWS en los archivos *config* y *credentials*, para una correcta interacción con los servicios de Amazon  
 >* Conexión al contexto del Cluster de EKS creado previamente
->* Ejecución de comandos que permiten el despliegue de los microservicios  
+>* Ejecución de comandos de *kubectl* que permiten el despliegue de los microservicios  
 
 Luego de lograr el despliegue de la Infraestructura, inicializar el Bastión y conectar el mismo al contexto del Cluster de EKS, se procedió a buildear las imágener de Docker de manera local, haciendo uso de los Dockerfile provistos para tal efecto. Las mismas fueron publicadas en un repositorio de ECR de forma previa a la implementación, para que pudiesen ser consumidas por el sistema.
 
@@ -110,22 +110,22 @@ Para desplegar la infraestructura y la web Online Boutique, el administrador deb
 
 A continuación se describen los pasos a seguir para lograr el despliegue de Online Boutique haciendo uso del repositorio actual
 
->1. Clonar el repositorio (git clone https://github.com/ricardosanchezr96/obligatorio-isc.git)
->2. Editar los archivos mencionados en el bloque anterior, para que no exista conflicto alguno al momento de realizar la ejecución
->3. Posicionarse sobre el directorio *iac* del repositorio clonado
->4. Ejecutar el comando `terraform init` para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS)
+>1. Clonar el repositorio con el siguiente comando: <br>   `git clone https://github.com/ricardosanchezr96/obligatorio-isc.git`  
+>2. Editar, según la necesidad, los archivos mencionados en el bloque anterior, para que no exista conflicto alguno al momento de realizar la ejecución.
+>3. Posicionarse sobre el directorio *iac* del repositorio clonado.
+>4. Ejecutar el comando `terraform init` para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS).
 >5. Ejecutar `terraform plan` y verificar que la salida del comando indique que se crearán 9 recursos de Infraestructura en AWS.
 >6. Ejecutar `terraform apply` para que se cree la Infraestructura
 >> **Nota:** Al ejecutar el apply de Terraform, se debe tomar en consideración los tiempos aproximados que tarda en crear algunos recursos:
 >> * **EKS Cluster:** 10 minutos
 >> * **EKS Node Group:** 3 minutos
 >> * **Instancia Bastión:** 2 minutos  
-Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
+**Nota:** Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
 >7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
 >![Bastión Listo](./docs/img/bastion-ready.png)  
->8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web: <br>
+>8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web: <br>  
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
->9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:<br>
+>9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:<br>  
 `kubectl get -o json svc frontend-external | grep hostname`  
 
 # Pruebas de funcionamiento
@@ -158,13 +158,13 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
     * Carga automática de credenciales de AWS en el Bastión
 * El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltan:
     * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.  
-    * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente, por lo que para que la ejecución del comando `terraform destroy` sea exitoso, primero se deberá eliminar de forma manual el ELB.  
-    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue.  
+    * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitoso, primero se deberá eliminar de forma manual el ELB.  
+    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
 
 # Futuras mejoras
 
-En una primera instancia, detectamos los siguientes puntos de mejora en el despliegue realizado:
+En una primera instancia, detectamos los siguientes puntos de mejora para así optimizar el despliegue realizado:
 * Creación de un Application Load Balancer (EKS genera un Classic Load Balancer, el cual se encuentra deprecado).  
 * Implementación de un Auto Scaling Group, para escalado automático de Pods en función a los niveles de carga que manejen los Worker Nodes.  
 * Desarrollo de alguna optimización que permita que el Load Balancer sea generado desde Terraform, para que el comando `terraform destroy` sea capaz de eliminar toda la Infraestructura en una única ejecución. 
