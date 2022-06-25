@@ -17,9 +17,9 @@ Luego de esto, se asignaron permisos de edición a todos los integrantes del gru
 Se personalizó el archivo *.gitignore* para que todos los archivos referentes a cada workspace de Terraform no sean incluidos en cada uno de los commits realizados.
 Una vez que cada integrante logró clonar el repositorio de manera local en su PC, se procedió a desarrollar los componentes de la Infraestructura a desplegar, tratando de adoptar el siguiente orden:
 >1. Componentes de networking, desde lo más macro hasta lo más específico  
-    *  VPC  (CIDR 172.16.0.0/16)  
+    *  VPC    
     * Internet Gateway, con su correspondienre Route Table para garantizar salida a Internet   
-    * Subnets (CIDR 172.16.1.0/24 y 172.16.2.0/24)  
+    * Subnets   
     * Security Group para acceder por SSH al equipo Bastión (puerto 22)  
 >2. Componentes de Kubernetes (EKS)  
     * EKS Cluster  
@@ -38,13 +38,13 @@ Luego de lograr el despliegue de la Infraestructura, inicializar el Bastión y c
 
 # Componentes de Infraestructura
 Para lograr el despliegue de la Infraestructura donde se alojará Online Boutique, se crearon los siguientes componentes de infraestuctura en Amazon Web Services:
->* VPC
->* Dos subnets, alojadas en diferentes Zonas de Disponibilidad
+>* VPC (CIDR 172.16.0.0/16)  
+>* Dos subnets, alojadas en diferentes Zonas de Disponibilidad (CIDR 172.16.1.0/24 y 172.16.2.0/24)   
 >* Internet Gateway
 >* Route Table
 >* Elastic Kubernetes Service Cluster
 >* Elastic Kubernetes Service Node Group
->* Instancia EC2, la cual cumplirá la función de Bastión para el deploy de los microservicios
+>* Instancia EC2, la cual cumplirá la función de Bastión para el deploy de los microservicios (AMI *Amazon Linux*, *instancia tipo t2.micro*)
 >* Security Group para acceso vía SSH al Bastión
 
 
@@ -54,18 +54,17 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 
 ![Arquitectura de la solución](./docs/img/arquitectura.jpg)
 
+
 # Despliegue de la aplicación
 > **⚠ ATENCION: CAMBIOS A REALIZAR PARA IMPLEMENTAR DESDE DIFERENTES HOSTS⚠**  
 > En vista de las limitaciones que conlleva trabajar con AWS Academy, cada uno de los integrantes deberá realizar ciertas modificaciones para poder hacer el deploy automatizado de la Infraestructura, las cuales se detallan a continuación:
-> * Ingresar las credenciales de AWS en el archivo *iac/provision.sh* para que el equipo Bastión pueda conectarse correctamente a la cuenta que se requiera utilizar
->![Tabla de cambios](./docs/img/lineas-provision.png) 
+> * Ingresar las credenciales de AWS en el archivo *iac/provision.sh* para que el equipo Bastión pueda conectarse correctamente a la cuenta que se requiera utilizar  
 > * Modificar el Role ARN en los archivos *iac/eks-cluster.tf* e *iac/eks-ng.tf*. Esto se debe a que las cuentas Academy de AWS no permiten gestionar permisos para usuarios y roles, por lo que deberán ingresar de forma manual en cada cuenta.
 ><p align="center">
+>  <img width="200" src="./docs/img/lineas-provision.png" alt="Tabla de cambios"> <br>
+>  <img width="200" src="./docs/img/linea-eks-cluster.png" alt="Tabla de cambios"><br>
 >  <img width="200" src="./docs/img/linea-eks-cluster.png" alt="Tabla de cambios">
->  <img width="200" src="./docs/img/linea-eks-ng.png" alt="Tabla de cambios">
-</p>
-
-
+</p>  
 
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB**  
 > Con el fin de utilizar la mayor cantidad de recursos de AWS posibles, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
@@ -93,15 +92,19 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
 
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:  
->![Tabla de cambios](./docs/img/tabla-ecr-dockerhub.png)  
-Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.
->>**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*  
+><p align="center">
+><img src="./docs/img/tabla-ecr-dockerhub.png" width="700" alt="Online Boutique" />
+</p>
+
+>Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.  
+>>**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*    
 
 ## Requerimientos para desplegar la Infraestructura y Aplicación
 
 Para desplegar la infraestructura y la web Online Boutique, el administrador deberá contar con una estación que tenga los siguientes componentes funcionando:
 >* AWS cli, con credenciales actualizadas
->* Terraform v1.2.3
+>* Terraform v1.2.3  
+>* Cliente SSH, para conectarse al Bastión y obtener el DNS Endpoint de Online Boutique
 
 ## Instrucciones para lograr un despliegue exitoso
 
@@ -120,9 +123,10 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
 >7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los pods de Kubernetes están operativos:
 >![Bastión Listo](./docs/img/bastion-ready.png)  
->8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web:
+>8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web: <br>
 `ssh -i "key-name.pem" ec2-user@XXX.XXX.XXX.XXX`
->9. Una vez conectado al Bastión, se deberá introducir el comando `kubectl get -o json svc frontend-external | grep hostname` para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique  
+>9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:<br>
+`kubectl get -o json svc frontend-external | grep hostname`  
 
 # Pruebas de funcionamiento
 ## Ejecución de Terraform Apply
@@ -153,15 +157,18 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
     * Auto escalado a demanda
     * Carga automática de credenciales de AWS en el Bastión
 * El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltan:
-    * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.
+    * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.  
+    * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente, por lo que para que la ejecución del comando `terraform destroy` sea exitoso, primero se deberá eliminar de forma manual el ELB.  
     * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
 
 # Futuras mejoras
 
 En una primera instancia, detectamos los siguientes puntos de mejora en el despliegue realizado:
-* Creación de un Application Load Balancer (EKS genera un Classic Load Balancer, el cual se encuentra deprecado)
-* Implementación de un Auto Scaling Group, para escalado automático de Pods en función a los niveles de carga que manejen los Worker Nodes  
+* Creación de un Application Load Balancer (EKS genera un Classic Load Balancer, el cual se encuentra deprecado).  
+* Implementación de un Auto Scaling Group, para escalado automático de Pods en función a los niveles de carga que manejen los Worker Nodes.  
+* Desarrollo de alguna optimización que permita que el Load Balancer sea generado desde Terraform, para que el comando `terraform destroy` sea capaz de eliminar toda la Infraestructura en una única ejecución. 
+* Para un escenario en el que se cuente con más tiempo para hacer el diseño y despliegue de la solución, se recomienda implementar el uso de Certificados que permitan realizar la conexión a Online Boutique de forma segura utilizando el protocolo HTTPS.   
 
 
 # Integrantes del grupo
