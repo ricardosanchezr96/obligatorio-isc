@@ -17,14 +17,14 @@ Luego de esto, se asignaron permisos de edición a todos los integrantes del gru
 Se personalizó el archivo .gitignore para que todos los archivos referentes a cada workspace de Terraform no sean incluidos en cada uno de los commits realizados.
 Una vez que cada integrante logró clonar el repositorio de manera local en su PC, se procedió a desarrollar los componentes de la infraestructura a desplegar, tratando de adoptar el siguiente orden:
 >1. Componentes de networking, desde lo más grande hasta lo más específico  
-    *  VPC  
+    *  VPC  (CIDR 172.16.0.0/16)
     * Internet Gateway  
-    * Subnets  
-    * Security Group  
+    * Subnets  (CIDR 172.16.1.0/24 y 172.16.2.0/24)  
+    * Security Group para acceder por SSH al equipo Bastión (puerto 22)
 >2. Componentes de Kubernetes (EKS)  
     * EKS Cluster  
     * EKS Node Group  
->3. Instancia Bastión 
+>3. Instancia Bastión
 
 Al lograr un despliegue exitoso de toda la infraestructura, se procedió a crear un Script para aprovisionar el Bastión. En esta etapa se describieron las acciones que se necesitaba realizar para lograr que la instancia esté en capacidad de desplegar automáticamente la web Online Boutique:
 >* Actualizar todos los paquetes del sistema a su versión más reciente
@@ -34,6 +34,7 @@ Al lograr un despliegue exitoso de toda la infraestructura, se procedió a crear
 >* Conexión al contexto del Cluster de EKS creado previamente
 >* Ejecución de comandos que permiten el despliegue de los microservicios
 
+Luego de lograr el despliegue de la infraestructura, inicializar el Bastión y conectar el mismo al contexto del Cluster de EKS, se procedió a buildear las imágener de Docker de manera local, haciendo uso de los Dockerfile provistos para tal efecto. Las mismas fueron publicadas en un repositorio de ECR de forma previa a la implementación, para que pudiesen ser consumidas por el sistema.
 
 # Componentes de infraestructura
 Para lograr el despliegue de la infraestructura donde se alojará Online Boutique, se crearon los siguientes componentes de infraestuctura en Amazon Web Services:
@@ -93,13 +94,13 @@ Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes
 
 
 
-## Requerimientos para deploy
+## Requerimientos para desplegar la Infraestructura y Aplicación
 
 Para desplegar la infraestructura y la web Online Boutique, el administrador deberá contar con una estación que tenga los siguientes componentes funcionando:
 >* AWS cli, con credenciales actualizadas
 >* Terraform v1.2.3
 
-## Instrucciones para deploy
+## Instrucciones para lograr un despliegue exitoso
 
 A continuación se describen los pasos a seguir para lograr el despliegue de Online Boutique haciendo uso del repositorio actual
 
@@ -152,16 +153,14 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
     * Carga automática de credenciales de AWS en el Bastión
 * El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltan:
     * Asignación de permisos entre cuentas, para poder compartir recursos de infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa
-    * 
-
-
-No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue.
+    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue.
 
 # Futuras mejoras
 
 En una primera instancia, detectamos los siguientes puntos de mejora en el despliegue realizado:
 * Creación de un Application Load Balancer (EKS genera un Classic Load Balancer, el cual se encuentra deprecado)
 * Implementación de un Auto Scaling Group, para escalado automático de Pods en función a los niveles de carga que manejen los Workers
+* 
 
 
 # Integrantes del grupo
