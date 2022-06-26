@@ -49,9 +49,9 @@ chmod 600 $AWS_CREDENTIALS_FILE
 # DE HACER PUSH DE LOS CAMBIOS AL REPOSITORIO DE GITHUB.
 
 echo "[default]"                              > $AWS_CREDENTIALS_FILE
-echo "aws_access_key_id= "        >> $AWS_CREDENTIALS_FILE
-echo "aws_secret_access_key= " >> $AWS_CREDENTIALS_FILE
-echo "aws_session_token= " >> $AWS_CREDENTIALS_FILE
+echo "aws_access_key_id= ASIAYGT3XRH7LTTWM5XF"        >> $AWS_CREDENTIALS_FILE
+echo "aws_secret_access_key= 3c3Jfj1SS94FU4qUZuEiOQkuh5D+1//0x9SzlizL" >> $AWS_CREDENTIALS_FILE
+echo "aws_session_token= FwoGZXIvYXdzELj//////////wEaDFuQT0NSD7k7qFTQySK4AW237WhaFIitjkC8TbsWMwcGohKTuR6p0g30KcWe567J4maNLX6GcRKqHDCRCZLMKtr98eltMiCigImiZ9JNAx0c5HLx3Mk6WB1otK5+MCYapRWoOF9iFdV5JS4Kiqo6KXSAY/HsxtuAGgu9gEpZs6kgukY0NaPEh876POLhZLXRSWSe5JH9niJoFrpdc13N6Fo49hnYU6E9aT/Rr1jzaeqxwteTVLSlTjeJZThKAXQqP2zjPO1nHBco49DhlQYyLbg+40pzRR6Bp0UpIEjjmnLHWs0guMmlwcawV/41ammXl3sM2Uz7YlxTSc5QMg==" >> $AWS_CREDENTIALS_FILE
 
 
 # Para el archivo "config" se realiza el mismo procedimiento que con "credentials".
