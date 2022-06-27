@@ -40,6 +40,8 @@ Al lograr un despliegue exitoso de toda la Infraestructura, se procedió a crear
 
 Luego de lograr el despliegue de la Infraestructura, inicializar el Bastión y conectar el mismo al contexto del Cluster de EKS, se procedió a buildear las imágener de Docker de manera local, haciendo uso de los Dockerfile provistos para tal efecto. Las mismas fueron publicadas en un repositorio de ECR de forma previa a la implementación, para que pudiesen ser consumidas por el sistema.
 
+---
+
 # Componentes de Infraestructura
 Para lograr el despliegue de la Infraestructura donde se alojará Online Boutique, se crearon los siguientes componentes de infraestuctura en Amazon Web Services:
 >* VPC (CIDR 172.16.0.0/16)  
