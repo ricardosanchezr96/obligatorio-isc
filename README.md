@@ -2,17 +2,19 @@
 <img src="src/frontend/static/icons/Hipster_HeroLogoCyan.svg" width="300" alt="Online Boutique" />
 </p>
 
+---
 # Descripción de la solución
 
 Este repositorio, y la documentación contenida en él, representan la entrega final del trabajo práctico correspondiente a la asignatura *Implementación de Soluciones Cloud*, dentro del marco del quinto semestre de la carrera *Analista en Infraestructura Informática*, en la *Universidad ORT Uruguay*.
 
 Con la información contenida en el repositorio, el usuario estará en capacidad de hacer un deploy automatizado de la web Online Boutique, haciendo uso únicamente del comando `terraform apply`
 
-[Enlace al repositorio](https://github.com/ricardosanchezr96/obligatorio-isc) 
+[Enlace al repositorio](https://github.com/ricardosanchezr96/obligatorio-isc "obligatorio-isc") 
 
+---
 # Dinámica de trabajo
 
-En primer lugar, se generó un repositorio público basado en el [contenido](https://github.com/ISC-ORT-FI/online-boutique) brindado por los docentes. 
+En primer lugar, se generó un repositorio público basado en el [contenido](https://github.com/ISC-ORT-FI/online-boutique "ISC Online-Boutique") brindado por los docentes. 
 
 Luego de esto, se asignaron permisos de edición a todos los integrantes del grupo, para poder trabajar de manera colaborativa.
 
@@ -52,13 +54,15 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 ><img src="./docs/img/archivos-tf.png" width="450" alt="Archivos Terraform" />
 </p>
 
+---
+
 # Diagrama de Arquitectura
 
 **Online Boutique** es una implementación cloud de microservicios que se encarga de generar una página web de compras online, integrando diversos servicios escalables e independientes que permiten al usuario simular una experiencia real de compra digital, con la posibilidad de buscar artículos, añadirlos a su carrito y realizar la compra de los mismos. Soporta el uso de varios tipos de divisa, carga de datos de tarjetas de crédito, etc.
 
 ![Arquitectura de la solución](./docs/img/arquitectura.jpg)
 
-
+---
 # Despliegue de la aplicación
 > **⚠ ATENCION: CAMBIOS A REALIZAR PARA IMPLEMENTAR DESDE DIFERENTES HOSTS⚠**  
 > En vista de las limitaciones que conlleva trabajar con AWS Academy, cada uno de los integrantes deberá realizar ciertas modificaciones para poder hacer el deploy automatizado de la Infraestructura, las cuales se detallan a continuación:
@@ -69,6 +73,7 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 >  <img width="200" src="./docs/img/linea-eks-cluster.png" alt="Tabla de cambios"><br>
 >  <img width="200" src="./docs/img/linea-eks-ng.png" alt="Tabla de cambios">
 </p>  
+
 
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB**  
 > Con el fin de utilizar la mayor cantidad de recursos de AWS posibles, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
@@ -93,7 +98,6 @@ A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura
   ]
 }
 ```
-
 >En vista de que resulta inviable asignar permisos de lectura a todas las personas que quieran desplegar la aplicación, se deja también una alternativa con un repositorio de acceso público en la Registry DockerHub.
 Para lograr el cambio de repositorio, lo único que se deberá hacer es modificar el Manifiesto de Kubernetes de cada uno de los servicios, haciendo los siguientes cambios:  
 ><p align="center">
@@ -102,16 +106,14 @@ Para lograr el cambio de repositorio, lo único que se deberá hacer es modifica
 
 >Una vez realizadas esas modificaciones, se podrá hacer un pull de las imágenes alojadas en el repositorio público de DockerHub.  
 >>**Nota:** En el servicio de caché (Redis) no se debe realizar ningún cambio ya que este servicio utiliza la imagen pública *redis:alpine*    
-
+---
 ## Requerimientos para desplegar la Infraestructura y Aplicación
-
 Para desplegar la infraestructura y la web Online Boutique, el administrador deberá contar con una estación que tenga los siguientes componentes funcionando:
 >* AWS cli, con credenciales actualizadas
 >* Terraform v1.2.3  
 >* Cliente SSH, para conectarse al Bastión y obtener el DNS Endpoint de Online Boutique
-
+---
 ## Instrucciones para lograr un despliegue exitoso
-
 A continuación se describen los pasos a seguir para lograr el despliegue de Online Boutique haciendo uso del repositorio actual
 
 >1. Clonar el repositorio con el siguiente comando: <br>   `git clone https://github.com/ricardosanchezr96/obligatorio-isc.git`  
@@ -133,6 +135,7 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 >9. Una vez conectado al Bastión, se deberá introducir el siguiente comando para obtener el endpoint DNS del Load Balancer y poder acceder a Online Boutique:  
 `kubectl get -o json svc frontend-external | grep hostname`  
 
+---
 
 # Pruebas de funcionamiento
 ## Ejecución de Terraform Apply
@@ -146,19 +149,19 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 
 ## Compra de artículos en Online Boutique
 
-![Proceso compra](./docs/gif/oden-compra.gif)
+![Proceso compra](./docs/gif/oden-compra.gif)   
+
+---
 
 # Dificultades superadas
-
 Para la realización del siguiente trabajo práctico nos encontramos las siguientes dificultades:
 
 * Toda ejecución realizada desde el Script de aprovisionamiento para el Bastión se realizaba como Root, por lo que no teníamos disponibles los recursos al iniciar sesión como *ec2-user*. Esto se solucionó ingresando todos los comandos específicos de *kubectl* siguiendo el siguiente formato:<br>
 `su - ec2-user -c "comando"`  
 * Inicialmente trabajamos con un fork del repositorio original brindado por los profesores, el cual no podía ser configurado como de acceso público. Para solucionar esto, tuvimos que crear un nuevo repositorio, el cual fue configurado como público, lo que permite compartir el proyecto con cualquier persona externa que quiera hacer uso del mismo.
 * El hecho de no poder crear un repositorio público en ECR generó la necesidad, en una primera instancia, de crear un repositorio público en DockerHub, modificar el tag de las imágenes y hacer un push de las mismas para poder llamar a las imágenes al momento de hacer el despliegue.
-
+---
 # Limitantes
-
 Debido a múltiples factores, al momento de realizar esta implementación nos topamos con diferentes limitaciones que no nos permitieron lograr ciertos objetivos:
 * La falta de experiencia en el uso de estas herramientas y modalidades de trabajo exigieron pasar por una etapa de aprendizaje que nos impidió realizar ciertas mejoras al trabajo práctico
     * Auto escalado a demanda
@@ -168,31 +171,29 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
     * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitosa, primero se deberá eliminar de forma manual el ELB y el Security Group que crea por defecto.  
     * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la Infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
-
-# Futuras mejoras
-
+---
+# Futuras mejoras   
 En una primera instancia, detectamos los siguientes puntos de mejora para así optimizar el despliegue realizado:
 * Creación de un Application Load Balancer (EKS genera un Classic Load Balancer, el cual se encuentra deprecado).  
 * Implementación de un Auto Scaling Group, para escalado automático de Pods en función a los niveles de carga que manejen los Worker Nodes.  
 * Desarrollo de alguna optimización que permita que el Load Balancer sea generado desde Terraform, para que el comando `terraform destroy` sea capaz de eliminar toda la Infraestructura en una única ejecución. 
-* Para un escenario en el que se cuente con más tiempo para hacer el diseño y despliegue de la solución, se recomienda implementar el uso de Certificados que permitan realizar la conexión a Online Boutique de forma segura utilizando el protocolo HTTPS.   
-
-
+* Para un escenario en el que se cuente con más tiempo para hacer el diseño y despliegue de la solución, se recomienda implementar el uso de Certificados que permitan realizar la conexión a Online Boutique de forma segura utilizando el protocolo HTTPS. 
+* Para la elaboración de la demo se trabajó con el Namespace *default* de Kubernetes. Para una implementación real, la recomendación es trabajar con varios Namespaces para separar ambientes (desarrollo, testing y producción).  
+---
 # Integrantes del grupo
 
 * Martín Pacheco - Número de estudiante 263651
 * Ricardo Sánchez - Número de estudiante 255864
-
+---
 # Referencias bibliográficas
 
-* [Aulas ORT](https://www.aulas.ort.edu.uy)
-* [Documentación oficial de Terraform](https://www.terraform.io/docs)
-* [Documentación oficial de Kubernetes](https://kubernetes.io/es/docs/home/)
-* [Documentación oficial de AWS](https://docs.aws.amazon.com/)
-* [Documentación oficial de Docker](https://docs.docker.com/)
-
-
-
+* [Aulas ORT](https://www.aulas.ort.edu.uy "Aulas ORT")
+* [Documentación oficial de Terraform](https://www.terraform.io/docs "Terraform")
+* [Documentación oficial de Kubernetes](https://kubernetes.io/es/docs/home/ "Kubernetes")
+* [Documentación oficial de AWS](https://docs.aws.amazon.com/ "Amazon Web Services")
+* [Documentación oficial de Docker](https://docs.docker.com/ "Docker")
+---
 # Declaración de autoría
 
-Por la siguiente, Martín Pacheco y Ricardo Sánchez, con números de estudiante 263651 y 255864 respectivamente, estudiantes de la carrera Analista en Infraestructura Informática en relación con el trabajo obligatorio de fin de semestre presentado para su evaluación y defensa, declaramos que asumimos la autoría de dicho documento entendida en el sentido de que no se han utilizado fuentes sin citarlas debidamente.
+Por la siguiente, Martín Pacheco y Ricardo Sánchez, con números de estudiante 263651 y 255864 respectivamente, estudiantes de la carrera Analista en Infraestructura Informática en relación con el trabajo obligatorio de fin de semestre presentado para su evaluación y defensa, declaramos que asumimos la autoría de dicho documento entendida en el sentido de que no se han utilizado fuentes sin citarlas debidamente.  
+
