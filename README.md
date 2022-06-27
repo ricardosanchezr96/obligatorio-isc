@@ -165,7 +165,7 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
     * Carga automática de credenciales de AWS en el Bastión
 * El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltamos:
     * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.  
-    * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitoso, primero se deberá eliminar de forma manual el ELB.  
+    * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitosa, primero se deberá eliminar de forma manual el ELB y el Security Group que crea por defecto.  
     * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la Infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
 

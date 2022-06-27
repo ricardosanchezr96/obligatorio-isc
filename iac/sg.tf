@@ -1,9 +1,7 @@
 # Se crea el Security Group, el cual sera asociado al Bastion
 # para poder acceder via SSH.
 
-resource "aws_security_group" "obligatorio-sg" {
-  name        = "obligatorio-sg"
-  description = "Permitir acceso via SSH"
+resource "aws_default_security_group" "obligatorio-sg" {
   vpc_id      = aws_vpc.obligatorio-vpc.id
 
   ingress {

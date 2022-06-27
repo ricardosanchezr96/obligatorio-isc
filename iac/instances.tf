@@ -5,7 +5,6 @@
 resource "aws_instance" "bastion" {
   ami                    = var.ami-id
   instance_type          = var.inst-type
-  vpc_security_group_ids = [aws_security_group.obligatorio-sg.id]
   key_name               = "vockey"
  # Al momento de inicializar el Bastion, se ejecutara un script llamado "provision.sh"
  # el cual contiene la secuencia de comandos necesaria para hacer el deploy automatico
