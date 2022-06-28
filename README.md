@@ -21,7 +21,7 @@ Luego de esto, se asignaron permisos de edición a todos los integrantes del gru
 Se personalizó el archivo *.gitignore* para que todos los archivos referentes a cada workspace de Terraform no sean incluidos en cada uno de los commits realizados.
 Una vez que cada integrante logró clonar el repositorio de manera local en su PC, se procedió a desarrollar los componentes de la Infraestructura a desplegar, tratando de adoptar el siguiente orden:
 >1. Componentes de networking, desde lo más macro hasta lo más específico  
-    *  VPC    
+    * VPC    
     * Internet Gateway, con su correspondienre Route Table para garantizar salida a Internet   
     * Subnets   
     * Security Group para acceder por SSH al equipo Bastión (puerto 22)  
@@ -38,16 +38,16 @@ Al lograr un despliegue exitoso de toda la Infraestructura, se procedió a crear
 >* Conexión al contexto del Cluster de EKS creado previamente
 >* Ejecución de comandos de *kubectl* que permiten el despliegue de los microservicios  
 
-Luego de lograr el despliegue de la Infraestructura, inicializar el Bastión y conectar el mismo al contexto del Cluster de EKS, se procedió a buildear las imágener de Docker de manera local, haciendo uso de los Dockerfile provistos para tal efecto. Las mismas fueron publicadas en un repositorio de ECR de forma previa a la implementación, para que pudiesen ser consumidas por el sistema.
+Luego de lograr el despliegue de la Infraestructura, inicializar el Bastión y conectar el mismo al contexto del Cluster de EKS, se procedió a buildear las imágenes de Docker de manera local, haciendo uso de los Dockerfile provistos para tal efecto. Las mismas fueron publicadas en un repositorio de ECR de forma previa a la implementación, para que pudiesen ser consumidas por el sistema.
 
 ---
 
 # Componentes de Infraestructura
-Para lograr el despliegue de la Infraestructura donde se alojará Online Boutique, se crearon los siguientes componentes de infraestuctura en Amazon Web Services:
+Para lograr el despliegue de la Infraestructura donde se alojará Online Boutique, se crearon los siguientes componentes en Amazon Web Services:
 >* VPC (CIDR 172.16.0.0/16)  
 >* Dos subnets, alojadas en diferentes Zonas de Disponibilidad (CIDR 172.16.1.0/24 y 172.16.2.0/24)   
 >* Internet Gateway
->* Route Table
+>* Default Route Table
 >* Elastic Kubernetes Service Cluster
 >* Elastic Kubernetes Service Node Group
 >* Instancia EC2, la cual cumplirá la función de Bastión para el deploy de los microservicios (AMI *Amazon Linux*, *instancia tipo t2.micro*)
@@ -78,7 +78,7 @@ Para lograr el despliegue de la Infraestructura donde se alojará Online Boutiqu
 
 
 > **CAMBIOS REFERENTES A ECR Y DOCKERHUB**  
-> Con el fin de utilizar la mayor cantidad de recursos de AWS posibles, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
+> Con el fin de utilizar la mayor cantidad de recursos de AWS posible, la implementación actual contempla la obtención de las imágenes de Docker (necesarias para realizar el deploy de los microservicios) desde un repositorio implementado bajo el servicio Elastic Container Registry de AWS.
 Sin embargo, las cuentas AWS Academy permiten crear únicamente repositorios privados, por lo que ningún usuario diferente del dueño del repositorio podrá acceder al mismo, salvo que se le otorguen permisos para hacer un pull de las imágenes.
 A efectos de optimizar el trabajo colaborativo, se otorgaron permisos de lectura para todos los integrantes del equipo por medio de la siguiente Access Policy: 
 ```json
@@ -124,11 +124,11 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 >4. Ejecutar el comando `terraform init` para inicializar el working directory de Terraform con los datos del provider (en este caso, AWS).
 >5. Ejecutar el comando `terraform plan` y verificar que la salida del comando indique que se crearán 9 recursos de Infraestructura en AWS.
 >6. Ejecutar el comando `terraform apply` para que se cree la Infraestructura
->> **Nota:** Al ejecutar el apply de Terraform, se debe tomar en consideración los tiempos aproximados que tarda en crear algunos recursos:
+>> **Nota:** Al ejecutar el apply de Terraform, se debe tener en cuenta los tiempos aproximados que tarda en crear algunos recursos:
 >> * **EKS Cluster:** 10 minutos
 >> * **EKS Node Group:** 3 minutos
 >> * **Instancia Bastión:** 2 minutos <br>   
->Se debe tener en consideración que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
+>Se debe tener presente que una interrupción forzada en la ejecución de Terraform antes de que finalice puede ocasionar que los archivos de estado queden corruptos y que se tenga que eliminar toda la Infraestructura manualmente para poder continuar con el despliegue.
 >7. Una vez finalizado el despliegue de Infraestructura por parte de Terraform, se deberá esperar que la consola de AWS indique que el Bastión superó exitosamente todos los chequeos de salud. Esto indica que el aprovisionamiento se realizó correctamente, y que los Pods de Kubernetes están operativos:
 >![Bastión Listo](./docs/img/bastion-ready.png)  
 >8. Conectarse vía SSH al Bastión para obtener el endpoint del Load Balancer creado por Kubernetes, el cual permitirá acceder a Online Boutique desde cualquier navegador web:   
@@ -156,7 +156,7 @@ A continuación se describen los pasos a seguir para lograr el despliegue de Onl
 ---
 
 # Dificultades superadas
-Para la realización del siguiente trabajo práctico nos encontramos las siguientes dificultades:
+Para la elaboración de este trabajo práctico nos encontramos las siguientes dificultades:
 
 * Toda ejecución realizada desde el Script de aprovisionamiento para el Bastión se realizaba como Root, por lo que no teníamos disponibles los recursos al iniciar sesión como *ec2-user*. Esto se solucionó ingresando todos los comandos específicos de *kubectl* siguiendo el siguiente formato:<br>
 `su - ec2-user -c "comando"`  
@@ -171,7 +171,7 @@ Debido a múltiples factores, al momento de realizar esta implementación nos to
 * El contar con cuentas de AWS Academy nos impidieron realizar ciertas modificaciones, entre las cuales resaltamos:
     * Asignación de permisos entre cuentas, para poder compartir recursos de Infraestructura entre los participantes. Debido a esto, cada uno debía desplegar todos los componentes de manera aislada, teniendo que modificar varios archivos antes de poder lograr una ejecución exitosa.  
     * En vista de que el Cluster de EKS es quien genera el Load Balancer de AWS, Terraform no tiene manera de saber que se ha generado tal componente. Debido a esto, para que la ejecución del comando `terraform destroy` sea exitosa, primero se deberá eliminar de forma manual el ELB y el Security Group que crea por defecto.  
-    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la Infraestructura y a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
+    * No obstante, teniendo en cuenta esto, consideramos que el nivel de automatización logrado es elevado, ya que con la ejecución de dos comandos podemos inicializar y acceder a la Infraestructura, e ingresar a Online Boutique; en caso de que se desee portar la implementación a otro lugar, únicamente se deben modificar tres archivos de configuración para que funcione el despliegue, según las instrucciones brindadas en el presente documento.  
     **Nota:** Los cambios a realizar se encuentran debidamente documentados en cada uno de los archivos mencionados.
 ---
 # Futuras mejoras   
